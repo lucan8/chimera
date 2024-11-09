@@ -1,0 +1,9 @@
+3619205
+while 856
+if 26609
+template 1582
+mut 0
+fn 52
+void 11362
+class 1644
+public 1301
