@@ -1,67 +1,42 @@
 import numpy as np
 
 import re
+import math
 from collections import defaultdict
 
-dataset = [
-    ("if public class", "Java"),
-    ("for void int", "Java"),
-    ("while public double", "Java"),
-    ("class public void", "Java"),
-    ("if else public", "Java"),
-    ("let mut fn", "Rust"),
-    ("for while match", "Rust"),
-    ("if let mut", "Rust"),
-    ("while let fn", "Rust"),
-    ("mut match for", "Rust"),
-    ("for void include", "C++"),
-    ("if include int", "C++"),
-    ("else public include", "C++"),
-    ("class include public", "C++"),
-    ("for while include", "C++"),
-    ("while void public", "C++"),
-    ("include public int", "C++"),
-    ("if class public", "C++"),
-    ("let mut while", "Rust"),
-    ("if else while", "Java")
-]
-
 # keywords selectate (cpp, rust, java)
-selectedWords = {"if", "else", "for", "while", "let", "mut", "class", "public", "void", "include"}
+selectedWords = " ".join(open("keywords.txt", "r").readlines()).split()
 
 # numarul de aparitii keyword in fiecare categorie
 cppKeyWords = defaultdict(int)
 rustKeyWords = defaultdict(int)
 javaKeyWords = defaultdict(int)
 
-# numarul de cuvinte total in fiecare categorie
-cppTotalWords = 0
-rustTotalWords = 0
-javaTotalWords = 0
+# numarul de cuvinte total in fiecare categorie:
+# cppTotalWords, javaTotalWords, rustTotalWords
 
-# numar de cate ori apare fiecare cuvant in fiecare categorie
-for data, label in dataset:
-    # toate cuvintele din data
-    words = set(re.findall(r'\w+', data.lower()))
-    for word in words:
-        if label == "C++":
-            cppTotalWords += 1
-            if word in selectedWords:
-                cppKeyWords[word] += 1
-        elif label == "Java":
-            javaTotalWords += 1
-            if word in selectedWords:
-                javaKeyWords[word] += 1
-        else:
-            rustTotalWords += 1
-            if word in selectedWords:
-                rustKeyWords[word] += 1
+# cate file-uri am de fiecare categorie:
+# dataCount, cppCount, javaCount, rustCount
 
-# cate inputuri am de fiecare tip
-dataCount = len(dataset)
-cppCount = sum(1 for t in dataset if t[1] == "C++")
-javaCount = sum(1 for t in dataset if t[1] == "Java")
-rustCount = sum(1 for t in dataset if t[1] == "Rust")
+cppResults = open("cpp_results.txt", "r")
+cppTotalWords, cppCount = [int(n) for n in cppResults.readline().split()]
+for line in cppResults.readlines():
+    cppKeyWords[line.split()[0]] = int(line.split()[1])
+cppResults.close()
+
+javaResults = open("java_results.txt", "r")
+javaTotalWords, javaCount = [int(n) for n in javaResults.readline().split()]
+for line in javaResults.readlines():
+    javaKeyWords[line.split()[0]] = int(line.split()[1])
+javaResults.close()
+
+rustResults = open("rs_results.txt", "r")
+rustTotalWords, rustCount = [int(n) for n in rustResults.readline().split()]
+for line in rustResults.readlines():
+    rustKeyWords[line.split()[0]] = int(line.split()[1])
+rustResults.close()
+
+dataCount = cppCount + javaCount + rustCount
 
 # probabilitati a priori
 pCpp = cppCount / dataCount
@@ -79,32 +54,49 @@ def calcProbabilities(wordDict, totalWords, smoothing=0):
     return probabilities
 
 
-probabilitiesCpp = calcProbabilities(cppKeyWords, cppTotalWords)
-probabilitiesJava = calcProbabilities(javaKeyWords, javaTotalWords)
-probabilitiesRust = calcProbabilities(rustKeyWords, rustTotalWords)
+# in caz ca nu sunt fisiere de un anumit tip, TotalWords = 1 pentru a preveni impartire la 0
+probabilitiesCpp = calcProbabilities(cppKeyWords, max(cppTotalWords, 1))
+probabilitiesJava = calcProbabilities(javaKeyWords, max(javaTotalWords, 1))
+probabilitiesRust = calcProbabilities(rustKeyWords, max(rustTotalWords, 1))
 
 
 # Classification function
 def classify(data):
     dataWords = set(re.findall(r'\w+', data.lower()))
 
-    cppProbability = pCpp
-    javaProbability = pJava
-    rustProbability = pRust
+    cppProbability = math.log(pCpp) if pCpp else 0
+    javaProbability = math.log(pJava) if pJava else 0
+    rustProbability = math.log(pRust) if pRust else 0
+
+    '''
+    Log Probabilities:
+    The conditional probabilities for each class given an attribute value are small.
+    When they are multiplied together they result in very small values, 
+    which can lead to floating point underflow. 
+    A common fix for this is to add the log of the probabilities together
+    '''
 
     for word in dataWords:
         if word in selectedWords:
-            cppProbability *= probabilitiesCpp[word]
-            javaProbability *= probabilitiesJava[word]
-            rustProbability *= probabilitiesRust[word]
+            cppProbability += math.log(probabilitiesCpp[word]) if probabilitiesCpp[word] else 0
+            javaProbability += math.log(probabilitiesJava[word]) if probabilitiesJava[word] else 0
+            rustProbability += math.log(probabilitiesRust[word]) if probabilitiesRust[word] else 0
+
+    # daca nu exista fisiere de un anumit tip probabilitatea finala asociata categoriei e 0
+    cppProbability = math.exp(cppProbability) if pCpp else 0
+    javaProbability = math.exp(javaProbability) if pJava else 0
+    rustProbability = math.exp(rustProbability) if pRust else 0
 
     res = [cppProbability, javaProbability, rustProbability]
+    print(cppProbability, javaProbability, rustProbability, sep="  ")
+
     if max(res) == cppProbability:
         return "C++"
     elif max(res) == javaProbability:
         return "Java"
     else:
         return "Rust"
+
 
 # testez
 newInput = "if else while"

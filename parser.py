@@ -24,7 +24,7 @@ def flatten(dir_path: str, ext: str) -> Set[str]:
     return files
 
 
-def extract_data(keywords: List[str], dir_path: str, ext: str) -> Tuple[Dict[str, int], int]:
+def extract_data(keywords: List[str], dir_path: str, ext: str) -> Tuple[Dict[str, int], int, int]:
     """
     `extract_dat` walks the given directory path to look for files that end
     in `.{ext}`, if it encounters another directory it will recursively process
@@ -32,7 +32,7 @@ def extract_data(keywords: List[str], dir_path: str, ext: str) -> Tuple[Dict[str
     """
 
     total_tokens = 0
-    keyword_frq = { keyword: 0 for keyword in keywords }
+    keyword_frq = {keyword: 0 for keyword in keywords}
     lang_files = flatten(dir_path, ext)
 
     print(f"Sampling {len(lang_files)} language specifc files...")
@@ -59,7 +59,8 @@ def extract_data(keywords: List[str], dir_path: str, ext: str) -> Tuple[Dict[str
             print(f"Failed to open: {f_lang}")
             continue
 
-    return keyword_frq, total_tokens
+    return keyword_frq, total_tokens, len(lang_files)
+
 
 def main():
     samples = ["cpp", "java", "rs"]
@@ -71,13 +72,14 @@ def main():
             keywords.extend(words)
 
     for file_extension in samples:
-        keywords_frq, total_tokens = extract_data(keywords, "samples/" + file_extension, file_extension)
+        keywords_frq, total_tokens, total_files = extract_data(keywords, "samples/", file_extension)
 
         results_file = file_extension + "_results.txt"
         with open(results_file, "w") as file:
-            file.write(f"{total_tokens}\n")
+            file.write(f"{total_tokens} {total_files}\n")
 
             for key in keywords_frq:
                 file.write(f"{key} {keywords_frq[key]}\n")
+
 
 main()
