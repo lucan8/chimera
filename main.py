@@ -88,17 +88,41 @@ def classify(data):
     rustProbability = math.exp(rustProbability) if pRust else 0
 
     res = [cppProbability, javaProbability, rustProbability]
-    print(cppProbability, javaProbability, rustProbability, sep="  ")
+    # print(cppProbability, javaProbability, rustProbability, sep="  ")
 
     if max(res) == cppProbability:
-        return "C++"
+        return "cpp"
     elif max(res) == javaProbability:
-        return "Java"
+        return "java"
     else:
-        return "Rust"
+        return "rs"
+
+
+# testare model pentru fisierele salvate in tests.txt
+def test():
+    with open("tests.txt", "r") as tests:
+        totalFiles = 0
+        correctOutputs = 0
+        # fiecare linie si extensie din tests.txt
+        for line in tests.readlines():
+            totalFiles += 1
+            path, ext = line.split()
+            try:
+                # calsific fisierul de la path-ul respecctiv
+                with open(path, "r") as file:
+                    if classify(file.read()) == ext:
+                        correctOutputs += 1
+            except (IOError, OSError, UnicodeDecodeError) as e:
+                print(f"Failed to open: {path}")
+                continue
+    return correctOutputs * 100 / totalFiles
 
 
 # testez
+accuracy = test()
+print(f"Accuracy: {accuracy}\n")
+
+# input separat
 newInput = "if else while"
 classification = classify(newInput)
 print(f"Input: '{newInput}' is classified as: {classification}")

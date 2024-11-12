@@ -1,5 +1,6 @@
 import os
 import re
+import numpy as np
 
 from typing import Tuple, Dict, List, Set
 
@@ -8,8 +9,10 @@ def flatten(dir_path: str, ext: str) -> Set[str]:
     """
     `flatten` walks the dir_path tree and inserts the files that match the
     file extension into a set, if the entry is a directory then it will
-    create a reccursive call to flatten every directory it encounters
-    and will unite evertying into a set.
+    create a recursive call to flatten every directory it encounters
+    and will unite everything into a set.
+    Additionally, a random percentage of the files will be saved in order to
+    be tested upon
     """
     files = set()
     for dirpath, dirnames, filenames in os.walk(dir_path):
@@ -21,6 +24,13 @@ def flatten(dir_path: str, ext: str) -> Set[str]:
         for dirname in dirnames:
             files.union(flatten(os.path.join(dirpath, dirname), ext))
 
+    # split into training and test
+    percentage_test = 0.2
+    test_files = np.random.choice(list(files), size=int(len(files) * percentage_test), replace=False)
+    files.difference_update(test_files)
+    with open("tests.txt", "a") as tests:
+        for file in test_files:
+            tests.write(f"{file} {ext}\n")
     return files
 
 
@@ -64,6 +74,10 @@ def extract_data(keywords: List[str], dir_path: str, ext: str) -> Tuple[Dict[str
 
 def main():
     samples = ["cpp", "java", "rs"]
+
+    # delete contents of tests
+    with open("tests.txt", "w") as file:
+        pass
 
     keywords = []
     with open("keywords.txt", "r") as file:

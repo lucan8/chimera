@@ -1,9 +1,9 @@
-3620673 1802
-while 856
-if 26620
-template 1582
+2888020 1442
+while 733
+if 21563
+template 1317
 mut 0
-fn 52
-void 11362
-class 1645
-public 1301
+fn 41
+void 9114
+class 1365
+public 1071

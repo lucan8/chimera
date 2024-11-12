@@ -1,9 +1,9 @@
-137915 198
-while 23
-if 687
+106067 159
+while 21
+if 566
 template 0
 mut 0
 fn 0
-void 1961
-class 297
-public 2646
+void 1492
+class 241
+public 2044
