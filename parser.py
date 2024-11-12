@@ -45,7 +45,7 @@ def extract_data(keywords: List[str], dir_path: str, ext: str) -> Tuple[Dict[str
     keyword_frq = {keyword: 0 for keyword in keywords}
     lang_files = flatten(dir_path, ext)
 
-    print(f"Sampling {len(lang_files)} language specifc files...")
+    print(f"Sampling {len(lang_files)} '{ext}' files...")
     for f_lang in lang_files:
         try:
             with open(f_lang, "r") as file:
