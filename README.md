@@ -157,13 +157,13 @@ python3 main.py
 ```
 
 You could also change the keywords that are being used, if you wish to do so
-just change `keywords.txt`.
+just change `resources/keywords.txt`.
 
-The results of the parsing are in `{language}_results.txt`, here is what
+The results of the parsing are in `results/{language}_results.txt`, here is what
 everything means:
 
 ```
-rs_results.txt
+results/rs_results.txt
 --------------
 
 total tokens in all the .rs files
@@ -212,7 +212,7 @@ mentioned in a previous section.
 
 The functions mentioned in the Math Model deal with the calculations.
 We read the data gotten in the previous step using `read_from_results`. 
-`test` tests the model using the data stored in `tests.txt` and `draw_results_graph`
+`test` tests the model using the data stored in `resources/tests.txt` and `draw_results_graph`
 draws the the results graph which is saved as `results.png`. 
 
 We then print the `Accuracy` achieved by our model and store the probabilities
@@ -226,7 +226,7 @@ which calculates the probabilities of each of the programming language and choos
 
 # Results
 
-In `results.png` the light green means how many of the test data were of that
+In `results/results.png` the light green means how many of the test data were of that
 programming language type, the light blue means how many of that programming
 language the model predicted.
 
@@ -240,7 +240,7 @@ how it guessed relative to how many there were.
 
 
 
-![Overall results](results.png)
+![Overall results](./results/results.png)
 
 ![Keyword: new](./plots/new.png)
 ![Keyword: throw](./plots/throw.png)
