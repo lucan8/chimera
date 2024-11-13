@@ -1,6 +1,7 @@
 import os
 import re
 import numpy as np
+from collections import Counter
 
 from typing import Tuple, Dict, List, Set
 
@@ -16,13 +17,10 @@ def flatten(dir_path: str, ext: str) -> Set[str]:
     """
     files = set()
     for dirpath, dirnames, filenames in os.walk(dir_path):
-        filenames = [f for f in filenames if f.endswith("." + ext)]
-        for filename in filenames:
-            filepath = os.path.join(dirpath, filename)
-            files.add(filepath)
-
+        files.update({os.path.join(dirpath, f) for f in filenames if f.endswith("." + ext)})
+        #Going through the remaining the directories
         for dirname in dirnames:
-            files.union(flatten(os.path.join(dirpath, dirname), ext))
+            files.update(flatten(os.path.join(dirpath, dirname), ext))
 
     return files
 
@@ -33,8 +31,6 @@ def extract_data(keywords: List[str], dir_path: str, ext: str) -> Tuple[Dict[str
     in `.{ext}`, if it encounters another directory it will recursively process
     that direcotry and combines the return data with the data in the main call.
     """
-
-    total_tokens = 0
     keyword_frq = {keyword: 0 for keyword in keywords}
     lang_files = flatten(dir_path, ext)
 
@@ -47,6 +43,7 @@ def extract_data(keywords: List[str], dir_path: str, ext: str) -> Tuple[Dict[str
             tests.write(f"{file} {ext}\n")
 
     print(f"Sampling {len(lang_files)} '{ext}' files...")
+
     for f_lang in lang_files:
         try:
             with open(f_lang, "r") as file:
@@ -58,19 +55,40 @@ def extract_data(keywords: List[str], dir_path: str, ext: str) -> Tuple[Dict[str
                 # 2. `vector<vector<T>>`
 
                 # TODO: more separators to be found for a more accurate tokens
-                # counter
 
+                is_multiline_comment = False
                 for line in file:
-                    tokens = re.split(r'[ \t<]+', line)
-                    total_tokens += len(tokens)
+                    #Checking for start of multiline comment
+                    if line.find("/*") != -1:
+                        is_multiline_comment = True
 
-                    for keyword in keywords:
-                        keyword_frq[keyword] += tokens.count(keyword)
+                    # Getting index of end of multiline comment char
+                    comment_end = line.find("*/")
+                    # Setting the flag as false and replacing the line with the reamining part without comment
+                    if comment_end != -1:
+                        is_multiline_comment = False
+                        line = line[comment_end + 1:]
+
+                    #If the flag is set to true we just ignore the line, otherwise we parse it
+                    if not is_multiline_comment:
+                        #ignoring single line comments
+                        comment_start = line.find("//")
+                        if comment_start != -1:
+                            line = line[0:comment_start]
+
+                        # Spliting the tokens into a frequency dictionary
+                        tokens = Counter(re.split(r'[ \t\n<>(){}!=*+-&;:,|^%]+', line))
+
+                        # Adding the frequency of the tokens to keyword_freq
+                        for token, nr_tokens in tokens.items():
+                            if token in keyword_frq:
+                                keyword_frq[token] += nr_tokens
+                    
         except (IOError, OSError, UnicodeDecodeError) as e:
             print(f"Failed to open: {f_lang}")
             continue
 
-    return keyword_frq, total_tokens, len(lang_files)
+    return keyword_frq, sum(keyword_frq.values()), len(lang_files)
 
 
 def main():
