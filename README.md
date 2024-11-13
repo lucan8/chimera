@@ -92,6 +92,11 @@ $$
 
 # Run locally
 
+Versions used:
+- Python3: 3.12.7
+- Matplotlib: 3.9.2
+- Numpy: 2.1.3
+
 We do not provide the samples we use directly, what we provide are the results
 of our training which you can just use. If you wish to train this model with
 your own data we do provide the mechanism for this.
@@ -185,7 +190,6 @@ Our project has 3 steps:
 
 1. Parsing
 2. Training 
-3. Predicting
 
 #### 1. Parsing
 
@@ -204,8 +208,6 @@ This process happens for every language and then we write the data to a specific
 mentioned in a previous section.
 
 #### 2. Training
-
-#### 3. Predicting
 
 # Results
 
