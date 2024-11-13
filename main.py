@@ -121,6 +121,7 @@ def draw_results_graph(files_found, files_total):
 
 # Test the model for the files saved in tests.txt
 def test():
+    # file_dist = {["cpp", "java", "rust"]}
     with open("tests.txt", "r") as tests:
         total_files = 0
         correct_outputs = 0
@@ -167,9 +168,25 @@ new_input = "if else while"
 classification = classify(new_input)
 print(f"Input: '{new_input}' is classified as: {classification}")'''
 
-# Print the calculated probabilities for each keyword
-print("\nWord Probabilities:")
+training_files = {ext: open("training/training_" + ext + ".txt", 'w') for ext in ["cpp", "java", "rs"]}
+
+index = 0
+#Filling the training files
 for word in selected_words:
-    print(f"{word} - P(word|cpp): {keyword_probabilities_cpp[word]}, "
-          f"P(word|java): {keyword_probabilities_java[word]}, "
-          f"P(word|rust): {keyword_probabilities_rust[word]}")
+        backslash_n = "\n"
+        # If it's last keyword we don't print '\n
+        if index == len(selected_words) - 1:
+            backslash_n = ""
+
+        training_files["cpp"].write("P(" + str(word) + "|cpp): " + str(keyword_probabilities_cpp[word]) + backslash_n)
+        training_files["java"].write("P(" + str(word) + "|java): " + str(keyword_probabilities_java[word]) + backslash_n)
+        training_files["rs"].write("P(" + str(word) + "|rs): " + str(keyword_probabilities_rust[word]) + backslash_n)
+
+        index += 1
+
+# Print the calculated probabilities for each keyword
+# print("\nWord Probabilities:")
+# for word in selected_words:
+#     print(f"{word} - P(word|cpp): {keyword_probabilities_cpp[word]}, "
+#           f"P(word|java): {keyword_probabilities_java[word]}, "
+#           f"P(word|rust): {keyword_probabilities_rust[word]}")
