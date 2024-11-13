@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 import re
 import math
@@ -98,23 +99,59 @@ def classify(data):
         return "rs"
 
 
+def drawResultsGraph(filesFound, filesTotal):
+    languages = ["C++", "Java", "Rust"]
+
+    bar_width = 0.4
+    x = np.arange(len(languages))
+
+    plt.bar(languages, filesTotal, color='green', label="Expected")
+    plt.bar(languages, filesFound, color='blue', alpha=0.3, label="Found")
+
+    plt.xlabel("Languages")
+    plt.ylabel("Guesses")
+    plt.xticks(x, languages)
+    plt.legend()
+
+    plt.show()
+
+
 # testare model pentru fisierele salvate in tests.txt
 def test():
     with open("tests.txt", "r") as tests:
         totalFiles = 0
         correctOutputs = 0
+        cppFound = javaFound = rustFound = 0
+        cppTotal = javaTotal = rustTotal = 0
+
         # fiecare linie si extensie din tests.txt
         for line in tests.readlines():
             totalFiles += 1
             path, ext = line.split()
+            if ext == "cpp":
+                cppTotal += 1
+            elif ext == "java":
+                javaTotal += 1
+            else:
+                rustTotal += 1
+
             try:
                 # calsific fisierul de la path-ul respecctiv
                 with open(path, "r") as file:
-                    if classify(file.read()) == ext:
+                    result = classify(file.read())
+                    if result == ext:
                         correctOutputs += 1
+                    if result == "cpp":
+                        cppFound += 1
+                    elif result == "java":
+                        javaFound += 1
+                    else:
+                        rustFound += 1
             except (IOError, OSError, UnicodeDecodeError) as e:
                 print(f"Failed to open: {path}")
                 continue
+
+    drawResultsGraph([cppFound, javaFound, rustFound], [cppTotal, javaTotal, rustTotal])
     return correctOutputs * 100 / totalFiles
 
 
