@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import re
 
 res_files = {
     'Rust': 'rs_results.txt',
@@ -40,7 +41,11 @@ def plot_keywords():
         ax.set_title(f'Keyword: {keyword}')
         ax.set_ylabel("Occurrences")
 
-        plt.savefig(f'plots/\'{keyword}\'.png', dpi=300)
+
+        img_path = f"{keyword}.png"
+        invalid_chars = r'[<>:"/\\|?*]'
+        sanitized_path = re.sub(invalid_chars, '_', img_path)
+        plt.savefig(f"plots/{sanitized_path}", dpi=300)
 
         plt.close()
 
