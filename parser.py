@@ -77,7 +77,7 @@ def extract_data(keywords: List[str], dir_path: str, ext: str) -> Tuple[Dict[str
                             line = line[0:comment_start]
 
                         # Spliting the tokens into a frequency dictionary
-                        tokens = Counter(re.split(r'[ \t\n<>(){}!=*+-&;:,|^%]+', line))
+                        tokens = Counter(re.split(r'[ \t\n<>(){}!=*;:,|^%]+', line))
 
                         # Adding the frequency of the tokens to keyword_freq
                         for token, nr_tokens in tokens.items():
