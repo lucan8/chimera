@@ -221,7 +221,8 @@ They will be used for classifying the inputs.
 
 #### 3. Running
 
-This section refers to `main.py` which takes `input.txt` an determines which programming language is used.
+This section refers to `main.py` which reads the contents of `input.txt`, passes them to `classify`
+which calculates the probabilities of each of the programming language and chooses the one with the highest value.
 
 # Results
 
