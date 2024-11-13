@@ -1,4 +1,4 @@
 new throw match private friend unsafe synchronized public static void main Vec
-try borrow public: package extends namespace let class inline catch super fn
-override mod using implements trait Option throws delete virtual impl import
-use this struct private: template Result return
+try borrow package extends namespace let class inline catch super fn override
+mod using implements trait Option throws delete virtual impl import use this
+struct template Result return
