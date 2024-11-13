@@ -28,7 +28,7 @@ Our project implements a Multinomial Naive Bayes Classifier.
 The heart of the algorithm lies in **Bayes' Formula**, which states:
 
 $$
-P(C | X) = \frac{P(X | C) \cdot P(C)}{P(X)}
+P(A | B) = \frac{P(B | A) \cdot P(A)}{P(B)}
 $$
 
 ## Prior Probabilities
@@ -71,7 +71,7 @@ Using logarithms rather than multiplying the conditional probabilities helps pre
 
 ### Laplace Smoothing
 
-Laplace smoothing is a technique to handle cases where certain keywords may not appear in the training data for a given class. This smoothing avoids zero probabilities and enables a more robust model. In testing, the best smoothing value we 
+Laplace smoothing is a technique to handle cases where certain keywords may not appear in the training data for a given class. This smoothing avoids zero probabilities. Using a non zero value for the smoothing gave an increase in accuracy of about 25%
 
 ### Log Probabilities
 
