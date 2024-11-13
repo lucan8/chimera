@@ -274,3 +274,8 @@ how it guessed relative to how many there were.
 - For C++: https://github.com/opencv/opencv
 - For Java: https://github.com/plantuml/plantuml
 - For Rust: https://github.com/zed-industries/zed
+## Helpful links
+- https://www.geeksforgeeks.org/naive-bayes-classifiers/
+- https://en.wikipedia.org/wiki/Additive_smoothing
+- https://machinelearningmastery.com/naive-bayes-classifier-scratch-python/
+- https://www.youtube.com/watch?v=O2L2Uv9pdDA&ab_channel=StatQuestwithJoshStarmer
