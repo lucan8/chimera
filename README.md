@@ -189,7 +189,8 @@ Here is how some of the things works.
 Our project has 3 steps:
 
 1. Parsing
-2. Training 
+2. Training
+3. Running
 
 #### 1. Parsing
 
@@ -208,6 +209,12 @@ This process happens for every language and then we write the data to a specific
 mentioned in a previous section.
 
 #### 2. Training
+
+In this step we test the files in `resources/tests.txt` and at the same time determine the conditional probability for each keyword and each file format(which is written in the `trianing` folder). Results can be found in `results/results.png`(more about results can be found below).
+
+#### 3. Running
+
+This section refers to `main.py` which takes `input.txt` an determines which programming language is used.
 
 # Results
 
