@@ -38,7 +38,7 @@ def extract_data(keywords: List[str], dir_path: str, ext: str) -> Tuple[Dict[str
     percentage_test = 0.2
     test_files = np.random.choice(list(lang_files), size=int(len(lang_files) * percentage_test), replace=False)
     lang_files.difference_update(test_files)
-    with open("tests.txt", "a") as tests:
+    with open("resources/tests.txt", "a") as tests:
         for file in test_files:
             tests.write(f"{file} {ext}\n")
 
@@ -95,11 +95,11 @@ def main():
     samples = ["cpp", "java", "rs"]
 
     # delete contents of tests
-    with open("tests.txt", "w") as file:
+    with open("resources/tests.txt", "w") as file:
         pass
 
     keywords = []
-    with open("keywords.txt", "r") as file:
+    with open("resources/keywords.txt", "r") as file:
         for line in file:
             words = line.split()
             keywords.extend(words)
@@ -107,12 +107,10 @@ def main():
     for file_extension in samples:
         keywords_frq, total_tokens, total_files = extract_data(keywords, "samples/", file_extension)
 
-        results_file = file_extension + "_results.txt"
+        results_file = "results/" + file_extension + "_results.txt"
         with open(results_file, "w") as file:
             file.write(f"{total_tokens} {total_files}\n")
 
             for key in keywords_frq:
                 file.write(f"{key} {keywords_frq[key]}\n")
 
-
-main()

@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
 import re
+from probUtils import getSelectedWords
 
 res_files = {
-    'Rust': 'rs_results.txt',
-    'Java': 'java_results.txt',
-    'C++': 'cpp_results.txt'
+    'Rust': 'results/rs_results.txt',
+    'Java': 'results/java_results.txt',
+    'C++': 'results/cpp_results.txt'
 }
 
 language_colors = {
@@ -13,7 +14,7 @@ language_colors = {
     'C++': '#f34b7d'
 }
 
-keywords = " ".join(open("keywords.txt", "r").readlines()).split()
+keywords = getSelectedWords()
 keyword_counts = {language: {keyword: 0 for keyword in keywords} for language in res_files}
 
 def read_keyword_counts(file_name):
