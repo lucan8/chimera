@@ -10,87 +10,84 @@ Supported languages:
 
 # Contents
 
-1 .[Samples](#Samples)
+1 .[Math model](#Math-model)
 
-2 .[Math model](#Math-model)
+3 .[Run locally](#Run-locally)
 
-3 .[Project Structure](#Project-Structure)
+4 .[Results](#Results)
 
-4 .[Run locally](#Run-locally)
-
-5 .[Parsing interpretation](#Parsing-interpretation)
-
-6 .[Results](#Results)
-
-7 .[References](#References)
+5 .[References](#References)
 
 # Math model
 
 ## TODO:
 
-# Samples
-
-This project includes scripts for data collection and the results obtained,
-but not the projects themselves.
-The projects used are listed in the References section.
-
-The results of the data parsing are located at "chimera/{language}_results.txt".
-You can modify what tokens should be considered by modifying the file "chimera/keywords.txt".
-
-# Project structure
-
-To use your sample data create a `cpp`, `rs` and `java` drectory inside "chimera/data-parser/samples",
-your tree should look something like this:
-```bash
-.
-├── cpp_results.txt
-├── java_results.txt
-├── keywords.txt
-├── main.py
-├── parser.py
-├── README.md
-├── requirements.txt
-├── rs_results.txt
-├── samples
-│   ├── cpp-repo
-│   ├── java-repo
-│   └── rust-repo
-└── tests.txt
-```
-
 # Run locally
+
+We do not provide the samples we use directly, what we provide are the results
+of our training which you can just use. If you wish to train this model with
+your own data we do provide the mechanism for this.
+
+Regardless of your choice you should first do:
 
 ```bash
 git clone git@github.com:lucan8/chimera.git
 cd chimera
 pip install -r requirements.txt
-
-// To run with your own training date make sure to follow the the
-// information presented in "Project structure".
-
-python3 main.py
 ```
 
-To add your own samples do the following:
+### Use our results
+
+Find a source code you would like to test (remember as of now we only can
+test for C++, Rust and Java) and put the file contents in `input.txt`, now run
+`python3 main.py` and that is our prediction.
+
+### Use your own data
+
+To train our model you will need lots of `.rs`, `.cpp` and `.java` files,
+we recommend you clone repos for this, we used [this repos](#References).
+
+`parser.py` will do the heavy lifting for your, just make sure you clone the repos
+inside a directory `samples` (it is not in the repo by default).
+
 ```bash
-cd chimera
 mkdir samples
 cd samples
 
+// depth = 1 to clone the repos faster
 git clone <ssh_for_project1> --depth=1
 git clone <ssh_for_project2> --depth=1
 
-// Analyze the new projects
+...
+more repos
+...
+
+cd ..
+
+// To analyze the repos and split the files into test files and train files
 python3 parser.py
 
+// Train the model
+python3 train.py
+
+// (Optional) This will generate graphs for every keyword and show how many
+// times a keyword appears in each language.
+//
+// The plots are in the `plots` directory.
+python3 keywords_plot.py
+
+// Add your sample input to input.txt
+cat > input.txt (or just use a text editor)
+
+// Make a prediction
 python3 main.py
-...
 ```
 
-# Parsing interpretation
+You could also change the keywords that are being used, if you wish to do so
+just change `keywords.txt`.
 
-After you run the parser a file will be generated for each programming language,
-where is what everything means:
+The results of the parsing are in `{language}_results.txt`, here is what
+everything means:
 
 ```
 rs_results.txt

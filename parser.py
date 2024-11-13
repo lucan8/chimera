@@ -22,13 +22,6 @@ def flatten(dir_path: str, ext: str) -> Set[str]:
         for dirname in dirnames:
             files.update(flatten(os.path.join(dirpath, dirname), ext))
 
-    # split into training and test
-    percentage_test = 0.2
-    test_files = np.random.choice(list(files), size=int(len(files) * percentage_test), replace=False)
-    files.difference_update(test_files)
-    with open("tests.txt", "a") as tests:
-        for file in test_files:
-            tests.write(f"{file} {ext}\n")
     return files
 
 
@@ -40,6 +33,14 @@ def extract_data(keywords: List[str], dir_path: str, ext: str) -> Tuple[Dict[str
     """
     keyword_frq = {keyword: 0 for keyword in keywords}
     lang_files = flatten(dir_path, ext)
+
+    # split into training and test
+    percentage_test = 0.2
+    test_files = np.random.choice(list(lang_files), size=int(len(lang_files) * percentage_test), replace=False)
+    lang_files.difference_update(test_files)
+    with open("tests.txt", "a") as tests:
+        for file in test_files:
+            tests.write(f"{file} {ext}\n")
 
     print(f"Sampling {len(lang_files)} '{ext}' files...")
 
