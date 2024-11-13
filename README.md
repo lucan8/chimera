@@ -10,13 +10,15 @@ Supported languages:
 
 # Contents
 
-1 .[Math model](#Math-model)
+1. [Math model](#Math-model)
 
-3 .[Run locally](#Run-locally)
+2. [Run locally](#Run-locally)
 
-4 .[Results](#Results)
+3. [Code rundown](#Code-rundown)
 
-5 .[References](#References)
+4. [Results](#Results)
+
+5. [References](#References)
 
 # Math model
 
@@ -108,6 +110,37 @@ v    v
 new 489
 ...
 ```
+
+# Code rundown
+
+Here is how some of the things works.
+
+Our project has 3 steps:
+
+1. Parsing
+2. Training 
+3. Predicting
+
+#### 1. Parsing
+
+In this step our parser first `flatten()`s the `samples` directory to determin
+the paths for language specific files, 20% of this files are used for `training`
+and the 80% to extract tokens.
+
+
+`extract_data()`
+There are all sorts of ways in which you can tokenize a file but we choose
+to split every line in a file by ['\t', '\n', '<', '>', '(', ')', '{', '}', '!',
+'=', '*', '+', '-', '&', ';', ':', '|', '^', '%', ']', '+'] and we check which
+of this tokens match certain keywords and cound how many tokens we have encountered.
+
+This process happens for every language and then we write the data to a specific file
+mentioned in a previous section.
+
+#### 2. Training
+
+#### 3. Predicting
+
 # Results
 
 In `results.png` the light green means how many of the test data were of that

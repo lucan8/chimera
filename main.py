@@ -58,22 +58,21 @@ keyword_probabilities_cpp = calc_probabilities(cpp_keywords, max(cpp_total_words
 keyword_probabilities_java = calc_probabilities(java_keywords, max(java_total_words, 1))
 keyword_probabilities_rust = calc_probabilities(rust_keywords, max(rust_total_words, 1))
 
-
-# Classification function
-def classify(data: str) -> str:
+def classify(data):
+    """
+    Log Probabilities:
+    The conditional probabilities for each class given an attribute value are small.
+    When they are multiplied together they result in very small values, 
+    which can lead to floating point underflow. 
+    A common fix for this is to add the log of the probabilities together
+    """
+    
     data_words = set(re.findall(r'\w+', data.lower()))
 
     cpp_probability = math.log(p_cpp) if p_cpp else 0
     java_probability = math.log(p_java) if p_java else 0
     rust_probability = math.log(p_rust) if p_rust else 0
 
-    '''
-    Log Probabilities:
-    The conditional probabilities for each class given an attribute value are small.
-    When they are multiplied together they result in very small values, 
-    which can lead to floating point underflow. 
-    A common fix for this is to add the log of the probabilities together
-    '''
 
     for word in data_words:
         if word in selected_words:
@@ -167,6 +166,8 @@ print(f"Input: '{new_input}' is classified as: {classification}")'''
 # Print the calculated probabilities for each keyword
 print("\nWord Probabilities:")
 for word in selected_words:
-    print(f"{word} - P(word|cpp): {keyword_probabilities_cpp[word]}, "
-          f"P(word|java): {keyword_probabilities_java[word]}, "
-          f"P(word|rust): {keyword_probabilities_rust[word]}")
+    print(
+        f"{word} - P(word|cpp): {keyword_probabilities_cpp[word]}, "
+        f"P(word|java): {keyword_probabilities_java[word]}, "
+        f"P(word|rust): {keyword_probabilities_rust[word]}"
+    )
