@@ -22,7 +22,73 @@ Supported languages:
 
 # Math model
 
-## TODO:
+# Multinomial Naive Bayes Classifier
+
+Our project implements a Multinomial Naive Bayes Classifier.  
+The heart of the algorithm lies in **Bayes' Formula**, which states:
+
+$$
+P(C | X) = \frac{P(X | C) \cdot P(C)}{P(X)}
+$$
+
+## Prior Probabilities
+
+We start by computing the **Prior Probabilities**, which represent the probability that a new file is either a C++, Java, or Rust file, without considering its contents. These probabilities are calculated as follows:
+
+$$
+P(\text{language}) = \frac{\text{Nr. of language files}}{\text{Total nr. of files}}
+$$
+
+## Conditional Probabilities
+
+Next, we calculate the conditional probabilities for each **keyword** given that the file is of a particular language. This is done as follows:
+
+$$
+P(\text{keyword | language}) = \frac{\text{count of keyword in language + smoothing}}{(\text{total nr. of keywords in language}) + \text{smoothing} \times \text{nr. of keywords}}
+$$
+
+This computation takes place in the `calc_probabilities` function, where we use **Laplace smoothing** to handle cases of zero occurrences. (See **Practical Considerations** below.)
+
+## Posterior Probabilities
+
+Finally, we calculate the posterior probabilities for each language. We start by setting the initial probabilities to the natural logarithm of the **Prior Probabilities**:
+
+$$P(\text{language}) = \ln(\text{Prior Probability})$$
+
+Then, for each keyword we find in our file, we add the natural log of the conditional probability:
+
+$$
+P(\text{language}) += \ln(P(\text{keyword | language}))
+$$
+
+The model's prediction is the language with the highest posterior probability. This process takes place in the `classify` function. 
+
+Using logarithms rather than multiplying the conditional probabilities helps prevent underflow (see **Practical Considerations**).
+
+---
+
+# Practical Considerations
+
+### Laplace Smoothing
+
+Laplace smoothing is a technique to handle cases where certain keywords may not appear in the training data for a given class. This smoothing avoids zero probabilities and enables a more robust model. In testing, the best smoothing value we 
+
+### Log Probabilities
+
+- The conditional probabilities for each class given an attribute value are small. When they are multiplied together they result in very small values, which can lead to floating point underflow. A common fix for this is to add the log of the probabilities together
+- The usual approach is to use the following formula, where the denominator can be removed as it is constant:
+
+$$
+P(y \vert x_1, \dots, x_n) = \frac{P(y) \prod_{i=1}^{n} P(x_i \vert y)}{P(x_1) P(x_2) \dots P(x_n)}
+$$
+
+which is mathematically equivalent to the logarithmic approach given the property:
+
+$$
+\ln(x \cdot y) = \ln(x) + \ln(y)
+$$
+
+---
 
 # Run locally
 
