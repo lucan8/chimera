@@ -40,7 +40,7 @@ def plot_keywords():
         ax.set_title(f'Keyword: {keyword}')
         ax.set_ylabel("Occurrences")
 
-        plt.savefig(f'plots/{keyword}.png', dpi=300)
+        plt.savefig(f'plots/"{keyword}".png', dpi=300)
 
         plt.close()
 
