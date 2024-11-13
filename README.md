@@ -209,6 +209,15 @@ mentioned in a previous section.
 
 #### 2. Training
 
+The functions mentioned in the Math Model deal with the calculations.
+We read the data gotten in the previous step using `read_from_results`. 
+`test` tests the model using the data stored in `tests.txt` and `draw_results_graph`
+draws the the results graph which is saved as `results.png`. 
+
+We then print the `Accuracy` achieved by our model and store the probabilities
+that we calculated for each keyword in the respective training file under the `training` folder.
+They will be used for classifying the inputs.
+
 # Results
 
 In `results.png` the light green means how many of the test data were of that
