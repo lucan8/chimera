@@ -83,7 +83,6 @@ def extract_data(keywords: List[str], dir_path: str, ext: str) -> Tuple[Dict[str
                         for token, nr_tokens in tokens.items():
                             if token in keyword_frq:
                                 keyword_frq[token] += nr_tokens
-                    
         except (IOError, OSError, UnicodeDecodeError) as e:
             print(f"Failed to open: {f_lang}")
             continue
@@ -113,4 +112,4 @@ def main():
 
             for key in keywords_frq:
                 file.write(f"{key} {keywords_frq[key]}\n")
-
+main()
