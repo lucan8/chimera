@@ -102,13 +102,29 @@ v        v
         
 keyword
 |
-|    number of times the keyword appeard
+|    number of times the keyword appeared
 |    |
 v    v
 new 489
 ...
 ```
 # Results
+
+In `results.png` the light green means how many of the test data were of that
+programming language type, the light blue means how many of that programming
+language the model predicted.
+
+So we can notice two interesting facts:
+
+1. The model predicted that there are more `Java` files than there were
+(not so surprising knowing that there were more Java files than the rest).
+
+2. The dark green you see is the combination of the two colors and it shows
+how it guessed relative to how many there were.
+
+
+
+![Overall results](results.png)
 
 ![Keyword: new](./plots/new.png)
 ![Keyword: throw](./plots/throw.png)
