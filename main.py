@@ -102,8 +102,9 @@ def classify(data):
 def drawResultsGraph(filesFound, filesTotal):
     languages = ["C++", "Java", "Rust"]
 
-    bar_width = 0.4
     x = np.arange(len(languages))
+
+    fig, ax = plt.subplots(figsize=(6, 4))
 
     plt.bar(languages, filesTotal, color='green', label="Expected")
     plt.bar(languages, filesFound, color='blue', alpha=0.3, label="Found")
@@ -113,7 +114,8 @@ def drawResultsGraph(filesFound, filesTotal):
     plt.xticks(x, languages)
     plt.legend()
 
-    plt.show()
+    plt.savefig(f"results.png", dpi=300)
+    #plt.show()
 
 
 # testare model pentru fisierele salvate in tests.txt
