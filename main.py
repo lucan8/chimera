@@ -4,14 +4,13 @@ import matplotlib.pyplot as plt
 import re
 import math
 from collections import defaultdict
+from typing import Tuple, Dict, List, Set
 
 # Get selected keywords (cpp, rust, java)
 selected_words = " ".join(open("keywords.txt", "r").readlines()).split()
 
 # Count of each keyword in every category
-cpp_keywords = defaultdict(int)
-rust_keywords = defaultdict(int)
-java_keywords = defaultdict(int)
+# cpp_keywords, rust_keywords, java_keywords
 
 # Count of total words in each category:
 # cpp_total_words, java_total_words, rust_total_words
@@ -19,23 +18,21 @@ java_keywords = defaultdict(int)
 # Count of files found of each type:
 # data_count, cpp_count, java_count, rust_count
 
-cpp_results = open("cpp_results.txt", "r")
-cpp_total_words, cpp_count = [int(n) for n in cpp_results.readline().split()]
-for line in cpp_results.readlines():
-    cpp_keywords[line.split()[0]] = int(line.split()[1])
-cpp_results.close()
 
-java_results = open("java_results.txt", "r")
-java_total_words, java_count = [int(n) for n in java_results.readline().split()]
-for line in java_results.readlines():
-    java_keywords[line.split()[0]] = int(line.split()[1])
-java_results.close()
+# Read from the result file associated with each language
+def read_from_results(file: str) -> Tuple[int, int, Dict[str, int]]:
+    results_file = open(file, "r")
+    total_words, count = [int(n) for n in results_file.readline().split()]
+    keywords = defaultdict(int)
+    for line in results_file.readlines():
+        keywords[line.split()[0]] = int(line.split()[1])
+    results_file.close()
+    return total_words, count, keywords
 
-rust_results = open("rs_results.txt", "r")
-rust_total_words, rust_count = [int(n) for n in rust_results.readline().split()]
-for line in rust_results.readlines():
-    rust_keywords[line.split()[0]] = int(line.split()[1])
-rust_results.close()
+
+cpp_total_words, cpp_count, cpp_keywords = read_from_results("cpp_results.txt")
+java_total_words, java_count, java_keywords = read_from_results("java_results.txt")
+rust_total_words, rust_count, rust_keywords = read_from_results("rs_results.txt")
 
 data_count = cpp_count + java_count + rust_count
 
@@ -47,7 +44,7 @@ p_rust = rust_count / data_count
 
 # Calculate the conditional probabilities for each category
 # smoothing refers to additive/Laplace smoothing
-def calc_probabilities(word_dict, total_words, smoothing=1):
+def calc_probabilities(word_dict: Dict[str, int], total_words: int, smoothing: int = 1) -> Dict[str, float]:
     probabilities = dict()
     for keyword in selected_words:
         probabilities[keyword] = (word_dict.get(keyword, 0) + smoothing) \
@@ -61,22 +58,20 @@ keyword_probabilities_cpp = calc_probabilities(cpp_keywords, max(cpp_total_words
 keyword_probabilities_java = calc_probabilities(java_keywords, max(java_total_words, 1))
 keyword_probabilities_rust = calc_probabilities(rust_keywords, max(rust_total_words, 1))
 
-
-# Classification function
 def classify(data):
     data_words = set(re.findall(r'\w+', data.lower()))
 
-    cpp_probability = math.log(p_cpp) if p_cpp else 0
-    java_probability = math.log(p_java) if p_java else 0
-    rust_probability = math.log(p_rust) if p_rust else 0
-
-    '''
+    """
     Log Probabilities:
     The conditional probabilities for each class given an attribute value are small.
     When they are multiplied together they result in very small values, 
     which can lead to floating point underflow. 
     A common fix for this is to add the log of the probabilities together
-    '''
+    """
+    cpp_probability = math.log(p_cpp) if p_cpp else 0
+    java_probability = math.log(p_java) if p_java else 0
+    rust_probability = math.log(p_rust) if p_rust else 0
+
 
     for word in data_words:
         if word in selected_words:
@@ -101,7 +96,7 @@ def classify(data):
 
 
 # Draw a graph for showing results after testing the model
-def draw_results_graph(files_found, files_total):
+def draw_results_graph(files_found: List[int], files_total: List[int]) -> None:
     languages = ["C++", "Java", "Rust"]
 
     x = np.arange(len(languages))
@@ -121,7 +116,6 @@ def draw_results_graph(files_found, files_total):
 
 # Test the model for the files saved in tests.txt
 def test():
-    # file_dist = {["cpp", "java", "rust"]}
     with open("tests.txt", "r") as tests:
         total_files = 0
         correct_outputs = 0
